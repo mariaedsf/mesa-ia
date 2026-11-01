@@ -1306,6 +1306,18 @@ a { color: inherit; text-decoration: none; }
   to { opacity: 1; transform: translateY(0); }
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .diagnostics-page *,
+  .diagnostics-page *::before,
+  .diagnostics-page *::after,
+  .diagnostics-simulation-dialog {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: .01ms !important;
+  }
+}
+
 @media (min-width: 1600px) {
   .diagnostics-page { padding-right: 44px; padding-left: 44px; }
   .health-card, .diagnostics-list-card { min-height: 455px; }

@@ -16,7 +16,7 @@ export function DiagnosticsList({ diagnostics, selectedId, filter, onFilter, onS
         {diagnosticCategories.map((category) => <Button key={category.id} type="button" variant="ghost" className={"diagnostics-filter" + (filter === category.id ? " active" : "")} aria-pressed={filter === category.id} onClick={() => onFilter(category.id)}>{category.label}</Button>)}
       </div></div>
       <div className="diagnostics-items">{filteredDiagnostics.length ? filteredDiagnostics.map((diagnostic) => <DiagnosticListItem key={diagnostic.id} diagnostic={diagnostic} selected={selectedId === diagnostic.id} onSelect={() => onSelect(diagnostic.id)} />) : <p className="diagnostics-empty">Nenhum diagnóstico nesta categoria.</p>}</div>
-      <p className="diagnostics-data-note"><span /> Diagnósticos calculados a partir dos registros atuais</p>
+      <p className="diagnostics-data-note"><span /> Diagnósticos e valores demonstrativos</p>
     </Card>
   );
 }
