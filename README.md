@@ -1,36 +1,40 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# MESA
 
-## Getting Started
+Aplicação Next.js de inteligência operacional para restaurantes, com painéis, diagnósticos, simulador e planos de ação. O estado operacional é persistido em SQLite por meio do Drizzle.
 
-First, run the development server:
+## Executar localmente
+
+Requer Node.js 20.9 ou superior.
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Acesse [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Verificações
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run lint
+npx tsc --noEmit
+npm run build
+```
 
-## Learn More
+## Escopo desta versão
 
-To learn more about Next.js, take a look at the following resources:
+- Os dados analíticos exibidos nos painéis são demonstrativos.
+- A seleção de restaurante, recomendações, planos de ação, disponibilidade do cardápio, respostas às avaliações, recomendações de diagnóstico e simulações são persistidos em SQLite.
+- Não há autenticação nem integrações externas configuradas.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Backend
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- `src/server/domain`: tipos e regras de negócio sem dependência de Next.js ou do banco.
+- `src/server/application`: casos de uso e contratos de repositório.
+- `src/server/infrastructure`: persistência SQLite com Drizzle.
+- `src/server/infrastructure/database/migrations`: histórico das migrações SQLite.
+- `src/server/drizzle.config.ts`: configuração usada pelos comandos `db:*`.
+- `src/server/actions.ts`: ações do Next.js que validam entradas, chamam os casos de uso e revalidam as páginas afetadas.
+- `src/server/container.ts`: ponto de composição que conecta o repositório e os dados iniciais.
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+O banco usa `./data/mesa.db` por padrão. Defina `MESA_DATABASE_PATH` para escolher outro arquivo SQLite.
