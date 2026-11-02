@@ -117,6 +117,14 @@ const featureTailwindStyles: Record<string, string> = {
   "reviews-response-button":     "[min-height:36px]! [padding:0_11px]! [gap:7px]! [border:1px_solid_#f5d7c2]! [border-radius:10px]!" + " " +
     "[background:#fff3e9]! [color:#b95213]! [font-size:10px]! [font-weight:620]! [&:hover]:[background:#ffeadb]!" + " " +
     "[&.done]:[border-color:#e1ece3]! [&.done]:[background:#f1f8f1]! [&.done]:[color:#287743]!",
+  "reviews-ai-generate":     "[width:100%]! [min-height:38px]! [margin-top:13px]! [gap:7px]! [border-color:#f5d7c2]! [border-radius:10px]!" + " " +
+    "[background:#fff7f0]! [color:#b95213]! [font-size:11px]! [font-weight:620]! [&:hover]:[background:#ffeadb]! [&:disabled]:[opacity:.65]!",
+  "reviews-ai-panel":     "[margin-top:10px]! [padding:13px]! [border:1px_solid_#f1e3d8]! [border-radius:13px]! [background:#fffaf6]!",
+  "reviews-ai-heading":     "[display:flex]! [align-items:center]! [gap:7px]! [color:#b95213]! [&>strong]:[font-size:11px]! [&>strong]:[font-weight:650]!",
+  "reviews-ai-draft":     "[margin:9px_0_11px]! [color:#4c4740]! [font-size:12px]! [line-height:1.6]! [white-space:pre-wrap]!",
+  "reviews-ai-copy-row":     "[display:flex]! [align-items:center]! [gap:9px]! [&>small]:[color:#9d5543]! [&>small]:[font-size:10px]! [&>small]:[line-height:1.4]!",
+  "reviews-ai-copy":     "[min-height:31px]! [padding:0_9px]! [gap:6px]! [border-color:#eee4da]! [border-radius:9px]! [background:#fff]! [color:#57514a]! [font-size:10px]!",
+  "reviews-ai-error":     "[margin:9px_0_0]! [color:#b94035]! [font-size:11px]! [line-height:1.45]!",
 };
 
 export function reviewsClassName(className: string) {

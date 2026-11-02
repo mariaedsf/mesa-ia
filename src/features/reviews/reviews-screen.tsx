@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState, useTransition } from "react";
-import { setReviewAnsweredAction } from "@server/actions";
+import { generateReviewResponseAction, setReviewAnsweredAction } from "@server/actions";
 import { useRestaurantName } from "@/components/workspace-shell";
 import type { Review } from "@/features/reviews/data";
 import { reviewsClassName } from "@/features/reviews/tailwind-styles";
@@ -20,6 +20,9 @@ export function ReviewsScreen({ initialReviews }: { initialReviews: Review[] }) 
   const [sort, setSort] = useState<{ key: SortKey; direction: "asc" | "desc" }>({ key: "date", direction: "desc" });
   const [page, setPage] = useState(0);
   const [activeReviewId, setActiveReviewId] = useState<string | null>(null);
+  const [responseDrafts, setResponseDrafts] = useState<Record<string, string>>({});
+  const [generatingReviewId, setGeneratingReviewId] = useState<string | null>(null);
+  const [responseError, setResponseError] = useState<{ reviewId: string; message: string } | null>(null);
 
   const counts = useMemo(() => reviews.reduce((result, review) => {
     result.total += 1;
@@ -61,6 +64,27 @@ export function ReviewsScreen({ initialReviews }: { initialReviews: Review[] }) 
     startTransition(() => setReviewAnsweredAction(id, answered));
   }
 
+  async function generateResponse(id: string) {
+    if (responseDrafts[id]) return;
+    setGeneratingReviewId(id);
+    setResponseError(null);
+    try {
+      const result = await generateReviewResponseAction(id);
+      if ("error" in result) {
+        setResponseError({ reviewId: id, message: result.error });
+        return;
+      }
+      setResponseDrafts((current) => ({ ...current, [id]: result.draft }));
+    } catch (error) {
+      setResponseError({
+        reviewId: id,
+        message: error instanceof Error ? error.message : "Não foi possível gerar a resposta.",
+      });
+    } finally {
+      setGeneratingReviewId(null);
+    }
+  }
+
   return (
     <main className={reviewsClassName("reviews-page")}>
       <header className={reviewsClassName("reviews-page-header")}>
@@ -87,7 +111,15 @@ export function ReviewsScreen({ initialReviews }: { initialReviews: Review[] }) 
         onClearSearch={() => { setSearch(""); setPage(0); }}
       />
       <p className={reviewsClassName("reviews-demo-note")}><i />Avaliações cadastradas para {restaurantName}.</p>
-      <ReviewDetailDialog review={activeReview} onClose={() => setActiveReviewId(null)} onToggleAnswered={toggleAnswered} />
+      <ReviewDetailDialog
+        review={activeReview}
+        onClose={() => setActiveReviewId(null)}
+        onToggleAnswered={toggleAnswered}
+        onGenerateResponse={generateResponse}
+        responseDraft={activeReview ? responseDrafts[activeReview.id] ?? null : null}
+        isGenerating={generatingReviewId === activeReview?.id}
+        responseError={activeReview && responseError?.reviewId === activeReview.id ? responseError.message : null}
+      />
     </main>
   );
 }

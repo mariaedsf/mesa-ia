@@ -2,7 +2,9 @@
 
 import { reviewsClassName } from "../../tailwind-styles";
 
-import { CheckCircle2, MessageSquareText, Star, X } from "lucide-react";
+import { Check, CheckCircle2, Copy, LoaderCircle, MessageSquareText, Sparkles, Star, X } from "lucide-react";
+
+import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 
@@ -16,11 +18,32 @@ export function ReviewDetailDialog({
   review,
   onClose,
   onToggleAnswered,
+  onGenerateResponse,
+  responseDraft,
+  isGenerating,
+  responseError,
 }: {
   review: Review | null;
   onClose: () => void;
   onToggleAnswered: (id: string) => void;
+  onGenerateResponse: (id: string) => void;
+  responseDraft: string | null;
+  isGenerating: boolean;
+  responseError: string | null;
 }) {
+  const [copyStatus, setCopyStatus] = useState<{ text: string; status: "copied" | "error" } | null>(null);
+  const currentCopyStatus = copyStatus?.text === responseDraft ? copyStatus.status : null;
+
+  async function copyDraft() {
+    if (!responseDraft) return;
+    try {
+      await navigator.clipboard.writeText(responseDraft);
+      setCopyStatus({ text: responseDraft, status: "copied" });
+    } catch {
+      setCopyStatus({ text: responseDraft, status: "error" });
+    }
+  }
+
   return (
     <Dialog open={Boolean(review)} onOpenChange={(open) => { if (!open) onClose(); }}>
       <DialogContent className={reviewsClassName("dialog-card reviews-detail-dialog")} overlayClassName="modal-backdrop" showCloseButton={false}>
@@ -35,6 +58,32 @@ export function ReviewDetailDialog({
             <strong>{review.rating},0</strong><ReviewSentiment sentiment={review.sentiment} />
           </div>
           <blockquote className={reviewsClassName("reviews-detail-comment")}>“{review.comment}”</blockquote>
+          <Button
+            className={reviewsClassName("reviews-ai-generate")}
+            variant="outline"
+            disabled={isGenerating || Boolean(responseDraft)}
+            onClick={() => onGenerateResponse(review.id)}
+          >
+            {isGenerating ? <LoaderCircle className="animate-spin" size={16} /> : <Sparkles size={16} />}
+            {isGenerating ? "Gerando resposta..." : responseDraft ? "Resposta gerada" : "Gerar resposta com IA"}
+          </Button>
+          {responseError && <p className={reviewsClassName("reviews-ai-error")} role="alert">{responseError}</p>}
+          {responseDraft && (
+            <section className={reviewsClassName("reviews-ai-panel")} aria-live="polite">
+              <div className={reviewsClassName("reviews-ai-heading")}>
+                <Sparkles size={15} aria-hidden="true" />
+                <strong>Rascunho sugerido</strong>
+              </div>
+              <p className={reviewsClassName("reviews-ai-draft")}>{responseDraft}</p>
+              <div className={reviewsClassName("reviews-ai-copy-row")}>
+                <Button className={reviewsClassName("reviews-ai-copy")} variant="outline" onClick={() => void copyDraft()}>
+                  {currentCopyStatus === "copied" ? <Check size={14} /> : <Copy size={14} />}
+                  {currentCopyStatus === "copied" ? "Copiado" : "Copiar resposta"}
+                </Button>
+                {currentCopyStatus === "error" && <small role="status">Não foi possível copiar. Selecione e copie o texto manualmente.</small>}
+              </div>
+            </section>
+          )}
           <div className={reviewsClassName("reviews-detail-footer")}><span className={reviewsClassName(`reviews-response-status${review.answered ? " answered" : ""}`)}><i />{review.answered ? "Respondida" : "Aguardando resposta"}</span>
             <Button className={reviewsClassName(`reviews-response-button${review.answered ? " done" : ""}`)} onClick={() => onToggleAnswered(review.id)}>{review.answered ? <CheckCircle2 size={16} /> : <MessageSquareText size={16} />}{review.answered ? "Marcar como pendente" : "Marcar como respondida"}</Button>
           </div>

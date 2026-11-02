@@ -5,6 +5,7 @@ import { z } from "zod";
 import { appStateService, operationalDataService } from "./container";
 import { actionStatuses } from "./domain/action-plan";
 import { estimateScenario } from "./domain/simulation";
+import { generateReviewReply } from "./infrastructure/openai-review-reply";
 
 const idSchema = z.string().trim().min(1).max(100);
 const nameSchema = z.string().trim().min(2).max(100);
@@ -176,6 +177,29 @@ export async function setReviewAnsweredAction(id: string, answered: boolean) {
     z.boolean().parse(answered),
   );
   revalidatePath("/avaliacoes");
+}
+
+export async function generateReviewResponseAction(id: string) {
+  const reviewId = idSchema.parse(id);
+  const restaurant = await operationalDataService.getSelectedRestaurant();
+  if (!restaurant) throw new Error("Nenhum restaurante selecionado.");
+
+  const review = (await operationalDataService.getReviews(restaurant.id))
+    .find((item) => item.id === reviewId);
+  if (!review) throw new Error("Avaliação não encontrada para o restaurante selecionado.");
+
+  try {
+    const draft = await generateReviewReply({
+      rating: review.rating,
+      item: review.item,
+      comment: review.comment.slice(0, 600),
+    });
+    return { draft };
+  } catch (error) {
+    return {
+      error: error instanceof Error ? error.message : "Não foi possível gerar a resposta.",
+    };
+  }
 }
 
 export async function deleteReviewAction(id: string) {
