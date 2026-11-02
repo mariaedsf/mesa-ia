@@ -20,7 +20,7 @@ export function DashboardAISummaryCard({ hasData }: { hasData: boolean }) {
     try {
       const result = await generateDashboardSummaryAction();
       if ("error" in result) {
-        setError(result.error);
+        setError(result.error ?? "Não foi possível gerar o resumo da operação.");
         return;
       }
       setSummary(result.summary);

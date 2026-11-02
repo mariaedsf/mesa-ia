@@ -71,7 +71,10 @@ export function ReviewsScreen({ initialReviews }: { initialReviews: Review[] }) 
     try {
       const result = await generateReviewResponseAction(id);
       if ("error" in result) {
-        setResponseError({ reviewId: id, message: result.error });
+        setResponseError({
+          reviewId: id,
+          message: result.error ?? "Não foi possível gerar a resposta.",
+        });
         return;
       }
       setResponseDrafts((current) => ({ ...current, [id]: result.draft }));
