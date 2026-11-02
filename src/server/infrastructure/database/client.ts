@@ -6,8 +6,11 @@ import Database from "better-sqlite3";
 import { drizzle } from "drizzle-orm/better-sqlite3";
 import * as schema from "./schema";
 
-const databasePath =
-  process.env.MESA_DATABASE_PATH?.trim() || path.join(process.cwd(), "data", "mesa.db");
+const configuredDatabasePath = process.env.MESA_DATABASE_PATH?.trim();
+const isVercel = Boolean(process.env.VERCEL);
+const databasePath = isVercel && !configuredDatabasePath?.startsWith("/tmp/")
+  ? path.join("/tmp", "mesa.db")
+  : configuredDatabasePath || path.join(process.cwd(), "data", "mesa.db");
 
 fs.mkdirSync(path.dirname(databasePath), { recursive: true });
 

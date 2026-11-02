@@ -21,7 +21,7 @@ npm run db:seed
 
 O seed cria um restaurante de demonstração com cardápio, pedidos dos últimos 14 dias, avaliações e planos de ação. Ele pode ser executado novamente: atualiza os registros de demonstração sem apagar outros dados e seleciona o restaurante de demonstração apenas quando ainda não há um restaurante selecionado.
 
-O banco usa `./data/mesa.db` por padrão. Defina `MESA_DATABASE_PATH` no ambiente ou em `.env` para escolher outro arquivo SQLite.
+O banco usa `./data/mesa.db` por padrão localmente. Na Vercel, usa `/tmp/mesa.db` para evitar gravar no filesystem somente leitura da função. O diretório `/tmp` é temporário e não garante persistência entre execuções; para armazenar dados de produção na Vercel, migre para um banco gerenciado. `MESA_DATABASE_PATH` permite escolher outro arquivo SQLite em ambientes com filesystem persistente.
 
 ## Respostas com IA
 
@@ -57,4 +57,4 @@ npm run build
 - `src/server/actions.ts`: ações do Next.js que validam entradas, chamam os casos de uso e revalidam as páginas afetadas.
 - `src/server/container.ts`: ponto de composição que conecta o repositório e os dados iniciais.
 
-O banco usa `./data/mesa.db` por padrão. Defina `MESA_DATABASE_PATH` para escolher outro arquivo SQLite.
+Localmente, o banco usa `./data/mesa.db` por padrão. Na Vercel, o fallback `/tmp/mesa.db` é temporário; dados duráveis exigem um banco gerenciado. `MESA_DATABASE_PATH` escolhe outro arquivo SQLite em ambientes com filesystem persistente.
