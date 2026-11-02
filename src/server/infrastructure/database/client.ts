@@ -95,6 +95,12 @@ sqlite.exec(`
     results TEXT NOT NULL,
     created_at INTEGER NOT NULL
   );
+  CREATE TABLE IF NOT EXISTS ai_dashboard_summaries (
+    input_hash TEXT PRIMARY KEY,
+    restaurant_id TEXT NOT NULL,
+    summary TEXT NOT NULL,
+    created_at INTEGER NOT NULL
+  );
 `);
 
 export const db = drizzle(sqlite, { schema });

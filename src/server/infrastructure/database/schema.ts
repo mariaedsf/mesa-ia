@@ -94,3 +94,10 @@ export const simulationRuns = sqliteTable("simulation_runs", {
   results: text("results", { mode: "json" }).notNull(),
   createdAt: integer("created_at", { mode: "timestamp" }).notNull(),
 });
+
+export const aiDashboardSummaries = sqliteTable("ai_dashboard_summaries", {
+  inputHash: text("input_hash").primaryKey(),
+  restaurantId: text("restaurant_id").notNull(),
+  summary: text("summary").notNull(),
+  createdAt: integer("created_at", { mode: "timestamp" }).notNull(),
+});

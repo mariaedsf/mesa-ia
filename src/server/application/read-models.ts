@@ -38,6 +38,11 @@ export type DashboardInsight = {
   description: string;
 };
 
+export type DashboardAISummary = {
+  positive: string;
+  attention: string;
+};
+
 export type DashboardReadModel = {
   restaurantId: string | null;
   hasData: boolean;

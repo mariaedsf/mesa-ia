@@ -20,7 +20,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="pt-BR" className={geist.variable}>
+    <html lang="pt-BR" className={geist.variable} data-scroll-behavior="smooth">
       <head><meta name="color-scheme" content="light" /></head>
       <body>
         <TooltipProvider>

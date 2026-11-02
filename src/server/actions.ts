@@ -5,6 +5,7 @@ import { z } from "zod";
 import { appStateService, operationalDataService } from "./container";
 import { actionStatuses } from "./domain/action-plan";
 import { estimateScenario } from "./domain/simulation";
+import { generateDashboardSummary } from "./infrastructure/openai-dashboard-summary";
 import { generateReviewReply } from "./infrastructure/openai-review-reply";
 
 const idSchema = z.string().trim().min(1).max(100);
@@ -198,6 +199,18 @@ export async function generateReviewResponseAction(id: string) {
   } catch (error) {
     return {
       error: error instanceof Error ? error.message : "Não foi possível gerar a resposta.",
+    };
+  }
+}
+
+export async function generateDashboardSummaryAction() {
+  try {
+    const data = await operationalDataService.getDashboardData();
+    const summary = await generateDashboardSummary(data);
+    return { summary };
+  } catch (error) {
+    return {
+      error: error instanceof Error ? error.message : "Não foi possível gerar o resumo da operação.",
     };
   }
 }
