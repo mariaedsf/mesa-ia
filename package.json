@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "db:seed": "node scripts/seed.mjs",
     "db:generate": "drizzle-kit generate --config=src/server/drizzle.config.ts",
     "db:migrate": "drizzle-kit migrate --config=src/server/drizzle.config.ts",
     "db:studio": "drizzle-kit studio --config=src/server/drizzle.config.ts"
