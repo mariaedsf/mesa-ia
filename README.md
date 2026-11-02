@@ -13,6 +13,26 @@ npm run dev
 
 Acesse [http://localhost:3000](http://localhost:3000).
 
+## Popular dados de demonstração
+
+```bash
+npm run db:seed
+```
+
+O seed cria um restaurante de demonstração com cardápio, pedidos dos últimos 14 dias, avaliações e planos de ação. Ele pode ser executado novamente: atualiza os registros de demonstração sem apagar outros dados e seleciona o restaurante de demonstração apenas quando ainda não há um restaurante selecionado.
+
+O banco usa `./data/mesa.db` por padrão. Defina `MESA_DATABASE_PATH` no ambiente ou em `.env` para escolher outro arquivo SQLite.
+
+## Respostas com IA
+
+Na tela **Avaliações**, abra um feedback e use **Gerar resposta com IA** para criar um rascunho em português. A resposta pode ser copiada e revisada antes de marcar a avaliação como respondida; o app não publica respostas no canal do cliente. A chamada envia à OpenAI apenas a nota, o nome do item e o comentário, sem o nome do cliente.
+
+Configure `OPENAI_API_KEY` no `.env` da raiz. O modelo padrão é `gpt-6-luna`, voltado a tarefas focadas e de alto volume, com custo por token menor que o modelo anterior. O comentário enviado é limitado a 600 caracteres e a resposta a 70 tokens. A chave é lida somente no servidor; não use o prefixo `NEXT_PUBLIC_`.
+
+Na home, **Resumo da IA** gera uma leitura dos indicadores, avaliações agregadas e recomendações. A chamada é feita ao clicar no botão, não ao abrir a página; o resumo fica em cache enquanto os dados usados forem os mesmos. Comentários e nomes de clientes não são enviados nessa análise.
+
+Não há limite de gerações de IA. Como o app ainda não tem autenticação, qualquer visitante que alcançar essas ações pode consumir créditos da chave configurada.
+
 ## Verificações
 
 ```bash
@@ -25,7 +45,7 @@ npm run build
 
 - Os dados analíticos exibidos nos painéis são demonstrativos.
 - A seleção de restaurante, recomendações, planos de ação, disponibilidade do cardápio, respostas às avaliações, recomendações de diagnóstico e simulações são persistidos em SQLite.
-- Não há autenticação nem integrações externas configuradas.
+- Não há autenticação de usuários nem limite de gerações de IA.
 
 ## Backend
 
